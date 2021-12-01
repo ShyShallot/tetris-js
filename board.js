@@ -22,7 +22,7 @@ class Board{
     visualize(){
         this.grid.forEach((row,y) =>{
             row.forEach((value,x) =>{
-                //console.log(value);
+                ////console.log(value);
                 //this.offest = 0.1;
                 //this.ctx.globalCompositeOperation = 'destination-over'
                 this.ctx.fillStyle = 'rgba(0,0,0,0.5)';
@@ -41,9 +41,9 @@ class Board{
         this.grid.forEach((row,y) => {
             row.forEach((value,x) =>{
                 if(pY == y && pX == x){
-                    //console.table(this.grid);
+                    ////console.table(this.grid);
                     this.grid[y][x] = newVal;
-                    //console.table(this.grid);
+                    ////console.table(this.grid);
                 }
             });
         });
@@ -70,7 +70,7 @@ class Board{
             }
             this.possibleShapes = ["I","J","L","O","S","T","Z"];
             var randomShape = this.possibleShapes[getRNG(0,this.possibleShapes.length-1)];
-            console.log(randomShape);
+            ////console.log(randomShape);
             this.shapeList.push(randomShape);
         }
         if(this.shapeList.length == 2){
@@ -80,7 +80,7 @@ class Board{
             this.pieceAhead = 0;
             this.updateList = true;
         }
-        console.log(this.shapeList);
+        ////console.log(this.shapeList);
         this.fallingPieces = 0;
         if(Canvas.activeItems.length >= 1){
             Canvas.activeItems.forEach((piece,i) => {
@@ -155,10 +155,10 @@ class Board{
         }
         this.ctx.fillStyle = this.color;
         this.shape.forEach((row, y) => {
-            console.log(row);
+            //console.log(row);
             row.forEach((value,x) => {
                 if(value > 0){
-                    console.log(x,y,row,value);
+                    //console.log(x,y,row,value);
                     this.ctx.fillRect(this.x-2+x,this.y+y,1,1);
                     board.updateBoard(this.x-2 + x,this.y+y);   
                 }
@@ -175,7 +175,7 @@ class Board{
             this.lastLength = 0;
             this.shape.forEach((row,y) =>{
                 row.forEach((value,x)=>{
-                    console.log(x,y,row,value);
+                    //console.log(x,y,row,value);
                     if(value > this.lastLength && value > 0){
                         this.lastLength = value;
                     }
@@ -195,13 +195,13 @@ class Board{
             return;
         }
         this.activePieces = this.canvas.getItems();
-        console.log(this.activePieces);
+        //console.log(this.activePieces);
         this.activePieces.forEach((piece, i) => {
             if(piece.active == 0){
                 return;
             }
             if(isValidMoveSpot(piece, board)){
-                console.log(piece, i);
+                //console.log(piece, i);
                 this.oldY = this.activePieces[i].y;
                 this.activePieces[i].y +=1;
                 board.reset();

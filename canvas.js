@@ -14,13 +14,13 @@ function newCanvas(){
                 this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
                 for(i=0;i<this.activeItems.length;i++){
                     piece = this.activeItems[i];
-                    //console.log(piece);
+                    ////console.log(piece);
                     this.ctx.fillStyle = piece.color;
                     piece.shape.forEach((row, y) => {
-                        //console.log(row);
+                        ////console.log(row);
                         row.forEach((value,x) => {
                             if(value > 0){
-                                //console.log(x,y,row,value);
+                                ////console.log(x,y,row,value);
                                 this.ctx.fillStyle = piece.color;
                                 this.ctx.fillRect(piece.x-2+x,piece.y+y,1,1);
                                 if(piece.active == 0){
@@ -40,14 +40,23 @@ function newCanvas(){
 
         ],
         addItem: function(object){
-            console.log(object);
-            [object].push({id:this.activeItems.length+1});
+            //console.log(object);
+            [object].push({id:this.activeItems.length}); // no need to add one as the length is 1 more than the index as arrays start at 0, a 1 item array would start at 0 but the length is 1
             this.activeItems.push(object);
-            console.log(object);
+            //console.log(object);
             return object;
         },
         removeItem: function(id){
             this.activeItems.splice(id,1);
+        },
+        grabActivePiece: function(){
+            var activePiece = null;
+            this.activeItems.for((piece, i) => {
+                if(piece.active == 1){
+                    activePiece = piece;
+                }
+            });
+            return activePiece;
         }
     }
     return Canvas;

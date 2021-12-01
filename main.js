@@ -3,7 +3,7 @@ Canvas.init();
 let board = new Board(Canvas);
 
 function main(){
-    console.log(Array(Canvas.cols));
+    //console.log(Array(Canvas.cols));
     board.reset();
     document.addEventListener('keydown', InputHandler);
     setInterval(() =>{
@@ -17,6 +17,6 @@ function loop(){
     Canvas.draw();
     board.visualize();
     collisionSystem();
-    board.fallPieces();
+    //board.fallPieces();
     board.checkLineClear();
 }
