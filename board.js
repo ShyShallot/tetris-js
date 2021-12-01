@@ -222,13 +222,10 @@ class Board{
                 }
             });
             if(isLineClear >= 10){
-                row.forEach((value,x) => {
-                    this.positional = [x,y];
-                });
                 this.activePieces.forEach((piece,i) =>{
                     piece.shape.forEach((pRow,pY) => {
                         pRow.forEach((pVal, pX) =>{
-                            if(piece.x+pX == this.positional[0] && piece.y+pY == this.positional[1]){
+                            if(piece.y+pY == this.positional[1]){
                                 pRow.forEach((_, _I) => {
                                     piece.shape[pY][pX] = 0;
                                 })
