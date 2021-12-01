@@ -223,7 +223,6 @@ class Board{
             });
             if(isLineClear >= 10){
                 row.forEach((value,x) => {
-                    this.grid[y][x] = 0;
                     this.positional = [x,y];
                 });
                 this.activePieces.forEach((piece,i) =>{
