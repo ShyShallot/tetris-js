@@ -22,6 +22,9 @@ function InputHandler(e){
                                 ////console.log(`Value is greater than 0`);
                                 ////console.log(board.grid[piece.y+y+1]);
                                 ////console.log(board.grid[piece.y+y+1][piece.x-2+x]);
+                                if(typeof piece === 'undefined'){
+                                    return;
+                                }
                                 if(board.grid[piece.y+y+1][piece.x-2+x] >= 2){
                                     piecesBelow++;
                                     ////console.log(piecesBelow);
@@ -44,6 +47,9 @@ function InputHandler(e){
                     piece.shape.forEach((row,y) =>{
                         row.forEach((value,x) =>{
                             if(value > 0){
+                                if(typeof piece === 'undefined'){
+                                    return;
+                                }
                                 console.log(`Next Spot Value: ${board.grid[piece.y+y][(piece.x+x)-3]}`);
                                 if(board.grid[piece.y+y][(piece.x+x)-3] == 2){
                                     nextSpot++;
@@ -65,6 +71,9 @@ function InputHandler(e){
                     piece.shape.forEach((row,y) =>{
                         row.forEach((value,x) =>{
                             if(value > 0){
+                                if(typeof piece === 'undefined'){
+                                    return;
+                                }
                                 nextX = board.grid[piece.y+y][(piece.x-1+x)];
                                 if(nextX >= 2){
                                     nextSpot++;
