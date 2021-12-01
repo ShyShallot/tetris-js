@@ -5,15 +5,18 @@ let board = new Board(Canvas);
 function main(){
     console.log(Array(Canvas.cols));
     board.reset();
-    let piece = board.createPiece();
-    console.log(piece.height());
+    document.addEventListener('keydown', InputHandler);
     setInterval(() =>{
         loop();
-    },1000)
+    },100);
 }
 
 function loop(){
+    board.reset();
+    board.generatePieces();
     Canvas.draw();
     board.visualize();
+    collisionSystem();
     board.fallPieces();
+    board.checkLineClear();
 }

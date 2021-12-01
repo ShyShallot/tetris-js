@@ -14,15 +14,20 @@ function newCanvas(){
                 this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
                 for(i=0;i<this.activeItems.length;i++){
                     piece = this.activeItems[i];
-                    console.log(piece);
+                    //console.log(piece);
                     this.ctx.fillStyle = piece.color;
                     piece.shape.forEach((row, y) => {
-                        console.log(row);
+                        //console.log(row);
                         row.forEach((value,x) => {
                             if(value > 0){
-                                console.log(x,y,row,value);
+                                //console.log(x,y,row,value);
+                                this.ctx.fillStyle = piece.color;
                                 this.ctx.fillRect(piece.x-2+x,piece.y+y,1,1);
-                                board.updateBoard(piece.x-2+x,piece.y+y,1);   
+                                if(piece.active == 0){
+                                    board.updateBoard(piece.x-2+x,piece.y+y,2);
+                                } else {
+                                    board.updateBoard(piece.x-2+x,piece.y+y,1);
+                                }
                             }
                         });
                     });   
