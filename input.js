@@ -19,9 +19,9 @@ function InputHandler(e){
                         row.forEach((value,x) =>{
                             //console.log(value);
                             if(value > 0){
-                                ////console.log(`Value is greater than 0`);
+                                console.log(`Value is greater than 0`);
                                 ////console.log(board.grid[piece.y+y+1]);
-                                ////console.log(board.grid[piece.y+y+1][piece.x-2+x]);
+                                console.log(board.grid[piece.y+y+1][piece.x-2+x]);
                                 if(typeof piece === 'undefined'){
                                     return;
                                 }
@@ -50,15 +50,15 @@ function InputHandler(e){
                                 if(typeof piece === 'undefined'){
                                     return;
                                 }
-                                console.log(`Next Spot Value: ${board.grid[piece.y+y][(piece.x+x)-3]}`);
-                                if(board.grid[piece.y+y][(piece.x+x)-3] == 2){
+                                nextX = board.grid[piece.y+y][(piece.x+x)-3];
+                                if(nextX >= 2 || typeof nextX === 'undefined'){
                                     nextSpot++;
-                                    console.log(`Pieces in Next Spot:${nextSpot}`);
-                                }
+                                    console.log(nextSpot);
+                                } 
                             }
                         });
                     });
-                    if(nextSpot <= 0 && piece.x-2 > 0){
+                    if(nextSpot <= 0){
                         Canvas.activeItems[i].x--;
                     }
                 }
@@ -74,21 +74,29 @@ function InputHandler(e){
                                 if(typeof piece === 'undefined'){
                                     return;
                                 }
-                                nextX = board.grid[piece.y+y][(piece.x-1+x)];
-                                if(nextX >= 2){
+                                nextX = board.grid[piece.y+y][(piece.x+x)-1];
+                                if(nextX >= 2 || typeof nextX === 'undefined'){
                                     nextSpot++;
                                     console.log(nextSpot);
-                                } else {
-                                    nextTile = board.grid[piece.y+y][(piece.x-1+x)];
-                                    if(piece.length() == 3){
-                                        nextTile = board.grid[piece.y+y][(piece.x+x)];
-                                    }
-                                }
+                                } 
                             }
                         });
                     });
-                    if(nextSpot <= 0 && typeof nextTile === 'number'){
+                    if(nextSpot <= 0){
                         Canvas.activeItems[i].x++;
+                    }
+                }
+            });
+            break;
+        case inputs.UP:
+            Canvas.activeItems.forEach((piece,i) => {
+                if(piece.active == 1){
+                    piece.shape = transpose(piece.shape);
+                    console.log(piece.x)
+                    if(piece.x <= 6){
+                        piece.x++;
+                    } else {
+                        piece.x--;
                     }
                 }
             });

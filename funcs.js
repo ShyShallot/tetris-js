@@ -23,16 +23,31 @@ function isValidMoveSpot(piece,board){
                 if(value == 0 || typeof x == 'undefined'){
                     return;
                 }
-                if(board.grid[piece.y+y+1][piece.x-2+x] >= 2){
+                if(piece.y+y+1 >= 20){
+                    piecesBelow++;
+                    return;
+                }
+                nextSpot = board.grid[piece.y+y+1][piece.x-2+x];
+                console.log(nextSpot);
+                if(typeof nextSpot === 'undefined'){
+                    piecesBelow++;
+                    return;
+                }
+                if(nextSpot >= 2){
                     piecesBelow++;
                     ////console.log(piecesBelow);
                 }
             }
         });
     });
-    if(piecesBelow <= 0 && piece.realY()+1 <= 19){
+    if(piecesBelow <= 0 && piece.y+1 <= 20){
         return true;
     } else {
         return false;
     }
 }
+function transpose(matrix) { // https://stackoverflow.com/questions/17428587/transposing-a-2d-array-in-javascript
+    return matrix.map((row, i) =>
+        row.map((val, j) => matrix[matrix.length - 1 - j][i])
+    );
+  }
