@@ -56,7 +56,7 @@ class Board{
     isInputActive(bool){
         if(bool){
             this.inputActive = true;
-            this.lastFallTime += 250;
+            this.lastFallTime += 150;
         } else {
             this.inputActive = false;
             this.lastFallTime -= 100;
@@ -227,34 +227,11 @@ class Board{
                     piece.shape.forEach((pRow,pY) => {
                         pRow.forEach((pVal, pX) =>{
                             if(piece.y+pY == y){
-                                pRow.forEach((_, _I) => {
-                                    piece.shape[pY][pX] = 0;
-                                    
-                                });
+                                piece.shape[pY][pX] = 0;
                             }
                         });
                     });
                 });
-
-                this.cleared = true;
-            }
-            if(this.cleared){
-                this.activePieces.forEach((piece,i) => {
-                    piece.shape.forEach((pRow,pY) => {
-                        console.log(piece.y+pY);
-                        if(piece.y+pY < y && piece.y+pY >= y-1){ // less than is above, greater than is below
-                            if(pY+1 > piece.length-1){
-                                piece.shape[piece.length-1] = piece.shape[pY];
-                            } else {
-                                piece.shape[pY+1] = piece.shape[pY];
-                            }
-                        } else if(piece.y+pY < y-1){
-                            piece.y++;
-                        } else if(piece.y+pY >= y+1){
-                            return;
-                        }
-                    })
-                })
             }
         });
     }

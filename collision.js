@@ -1,8 +1,9 @@
-function hasTouchedBorder(piece){
+async function hasTouchedBorder(piece){
     ////console.log(piece);
     if(piece.active == 1){
         nextSpot = piece.realY()+1;
         if(nextSpot >= 20){
+            await sleep(500);
             piece.active = 0;
             piece.shape.forEach((row,y) =>{
                 row.forEach((value,x) =>{

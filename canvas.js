@@ -16,9 +16,18 @@ function newCanvas(){
                     piece = this.activeItems[i];
                     ////console.log(piece);
                     this.ctx.fillStyle = piece.color;
+                    if(board.grid[piece.realY()+1] && piece.active == 0){
+                        if(board.grid[piece.realY()+1].every(zero => zero === 0)){
+                            piece.y++;
+                        }
+                    }
                     piece.shape.forEach((row, y) => {
                         ////console.log(row);
+                        this.emptyParts = 0;
                         row.forEach((value,x) => {
+                            if(value == 0){
+                                this.emptyParts++;
+                            }
                             if(value > 0){
                                 ////console.log(x,y,row,value);
                                 this.ctx.fillStyle = piece.color;
@@ -29,8 +38,12 @@ function newCanvas(){
                                     board.updateBoard(piece.x-2+x,piece.y+y,1);
                                 }
                             }
+                            
                         });
-                    });   
+                        if(this.emptyParts == row.length){
+                            piece.shape.splice(y,1);
+                        }
+                    });  
                 }
         },
         getItems: function(){

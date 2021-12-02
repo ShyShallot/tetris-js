@@ -17,6 +17,6 @@ function loop(){
     Canvas.draw();
     board.visualize();
     collisionSystem();
-    //board.fallPieces();
+    board.fallPieces();
     board.checkLineClear();
 }
