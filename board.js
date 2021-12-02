@@ -79,7 +79,11 @@ class Board{
                 this.gameOverCheck(true);
             }
         })
-        for(;this.pieceAhead<=2;this.pieceAhead++){
+        if(this.shapeList.length == 2){
+            this.pieceAhead = 0;
+            this.updateList = false;
+        }
+        for(;this.pieceAhead<2;this.pieceAhead++){
             if(!this.updateList){
                 continue;
             }
@@ -88,13 +92,7 @@ class Board{
             ////console.log(randomShape);
             this.shapeList.push(randomShape);
         }
-        if(this.shapeList.length == 2){
-            this.pieceAhead = 0;
-            this.updateList = false;
-        } else if (this.shapeList <= 1){
-            this.pieceAhead = 0;
-            this.updateList = true;
-        }
+        
         ////console.log(this.shapeList);
         this.fallingPieces = 0;
         if(Canvas.activeItems.length >= 1){
