@@ -33,8 +33,8 @@ class Board{
                 this.ctx.fillStyle = 'rgba(0,0,0,1)';
                 this.ctx.fillRect(x,y,0.1,1);
                 this.ctx.fillRect(x,y,1,0.1);
-                this.ctx.font = `1px Arial`;
-                this.ctx.fillText(value.toString(),x,y+1);
+                //this.ctx.font = `1px Arial`;
+                //this.ctx.fillText(value.toString(),x,y+1);
             });
         });
         //this.ctx.fillStyle = 'rgba(255,255,255,1)';
