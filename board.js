@@ -78,19 +78,18 @@ class Board{
             if(value >= 2){
                 this.gameOverCheck(true);
             }
-        })
+        });
         if(this.shapeList.length == 2){
-            this.pieceAhead = 0;
             this.updateList = false;
         }
-        for(;this.pieceAhead<2;this.pieceAhead++){
-            if(!this.updateList){
-                continue;
-            }
+        while(this.shapeList.length < 2 && this.updateList){
             this.possibleShapes = ["I","J","L","O","S","T","Z"];
             var randomShape = this.possibleShapes[getRNG(0,this.possibleShapes.length-1)];
             ////console.log(randomShape);
             this.shapeList.push(randomShape);
+        }
+        if(this.shapeList.length == 2){
+            this.updateList = false;
         }
         
         ////console.log(this.shapeList);
@@ -108,7 +107,7 @@ class Board{
             this.updateList = true;
         }
         console.log(this.shapeList);
-        this.nextPieceText.innerText = `Next Piece: ${this.shapeList[1]}`;
+        this.nextPieceText.innerText = `Next Piece: ${this.shapeList[0]}`;
     }
 
     createPiece(type){
