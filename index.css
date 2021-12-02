@@ -12,12 +12,14 @@ canvas{
     text-align: center;
     font-family: Arial;
     font-size: 30px;
+    margin-left: -450px;
 }
 #highscore{
     text-align: center;
     font-family: Arial;
     font-size: 30px;
     margin-top: -15px;
+    margin-left: -450px;
 }
 #gameover{
     text-align: center;
