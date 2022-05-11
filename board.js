@@ -13,6 +13,8 @@ class Board{
         this.LineClearedTime = 2500;
         this.gameOver = false;
         this.nextPieceText = document.getElementById('nextPiece');
+        this.activePiece;
+        this.pieces = [];
     }
     reset(){
         this.grid = this.emptyBoard();
@@ -33,8 +35,8 @@ class Board{
                 this.ctx.fillStyle = 'rgba(0,0,0,1)';
                 this.ctx.fillRect(x,y,0.1,1);
                 this.ctx.fillRect(x,y,1,0.1);
-                //this.ctx.font = `1px Arial`;
-                //this.ctx.fillText(value.toString(),x,y+1);
+                this.ctx.font = `1px Arial`;
+                this.ctx.fillText(value.toString(),x,y+1);
             });
         });
         //this.ctx.fillStyle = 'rgba(255,255,255,1)';
@@ -74,11 +76,6 @@ class Board{
         if(this.gameOver){
             return;
         }
-        this.grid[1].forEach((value,x) => {
-            if(value >= 2){
-                this.gameOverCheck(true);
-            }
-        });
         if(this.shapeList.length == 2){
             this.updateList = false;
         }
@@ -94,8 +91,8 @@ class Board{
         
         ////console.log(this.shapeList);
         this.fallingPieces = 0;
-        if(Canvas.activeItems.length >= 1){
-            Canvas.activeItems.forEach((piece,i) => {
+        if(this.pieces.length >= 1){
+            this.pieces.forEach((piece,i) => {
                 if(piece.active == 1 ){
                     this.fallingPieces++;
                 }
@@ -111,63 +108,74 @@ class Board{
     }
 
     createPiece(type){
-        this.x = 5; // offset by 2, so this x-2 is the actual x;
+        this.x = 0;
         this.y = 0;
         switch(type){
             case 'I':
                 this.color = '#75f1ff';
+                this.length = 1;
+                this.height = 4;
                 this.shape = [
-                    [0,1,0,0],
-                    [0,1,0,0],
-                    [0,1,0,0],
-                    [0,1,0,0]
+                    [1],
+                    [1],
+                    [1],
+                    [1]
                 ];
                 break;
             case 'J':
                 this.color = '#0d00ff';
+                this.length = 2;
+                this.height = 3;
                 this.shape = [
-                    [0,2,0],
-                    [0,2,0],
-                    [1,2,0]
+                    [0,1],
+                    [0,1],
+                    [1,1]
                 ];
                 break;
             case 'L':
                 this.color = '#ffb300';
+                this.length = 2;
+                this.height = 3;
                 this.shape = [
-                    [1,0,0],
-                    [1,0,0],
-                    [1,2,0]
+                    [1,0],
+                    [1,0],
+                    [1,1]
                 ];
                 break;
             case 'O':
                 this.color = '#fff700';
+                this.length = 2;
+                this.height = 2;
                 this.shape = [
-                    [1,2,0],
-                    [1,2,0]
+                    [1,1],
+                    [1,1]
                 ];
                 break;
             case 'S':
                 this.color = '#48913c';
+                this.length = 3;
+                this.height = 2;
                 this.shape = [
-                    [0,0,0],
-                    [0,2,3],
-                    [1,2,0]
+                    [0,1,1],
+                    [1,1,0]
                 ];
                 break;
             case 'T':
                 this.color = '#a732d1';
+                this.length = 3;
+                this.height = 2;
                 this.shape = [
-                    [0,0,0],
-                    [1,2,3],
+                    [1,1,1],
                     [0,1,0]
                 ];
                 break;
             case 'Z':
                 this.color = '#ff3d3d';
+                this.length = 3;
+                this.height = 2;
                 this.shape = [
-                    [0,0,0],
-                    [1,2,0],
-                    [0,2,3]
+                    [1,1,0],
+                    [0,1,1]
                 ];
                 break;
         }
@@ -176,32 +184,15 @@ class Board{
             //console.log(row);
             row.forEach((value,x) => {
                 if(value > 0){
-                    //console.log(x,y,row,value);
-                    this.ctx.fillRect(this.x+x+2,this.y+y,1,1);
-                    board.updateBoard(this.x+x-2,this.y+y);   
+                    console.log(x,y,row,value);
+                    this.ctx.fillRect(this.x+x-this.length,this.y+y+this.height,1,1);
+                    board.updateBoard(this.x+x-this.length,this.y+y+this.height);   
                 }
             });
         });
-        var piece = this.canvas.addItem({"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"shape":this.shape,
-        height: function(){
-            return this.shape.length;
-        },
-        realY: function(){
-            return this.y+this.shape.length-1;
-        },
-        length: function(){
-            this.Length = 0;
-            this.shape.forEach((row,y) =>{
-                row.forEach((value,x)=>{
-                    if(value > 0){
-                        this.Length++;
-                        return;
-                    }
-                });
-            });
-            return this.Length;
-        }
-        });
+        var piece = this.addItem({"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape});
+        console.log(piece);
+        this.activePiece = piece;
         return piece;
     }
     
@@ -210,23 +201,32 @@ class Board{
             return;
         }
         if(this.lastFallTime + this.fallTime > Date.now()){
+            console.log("dont fall");
             return;
         }
         if(this.inputActive){
+            this
+        }
+        if(this.activePiece.y+this.activePiece.height > 19){
+            this.activePiece.active = 0;
             return;
         }
-        this.activePieces = this.canvas.getItems();
-        //console.log(this.activePieces);
-        this.activePieces.forEach((piece, i) => {
-            if(isValidMoveSpot(piece, board)){
-                //console.log(piece, i);
-                this.oldY = this.activePieces[i].y;
-                this.activePieces[i].y +=1;
-                board.reset();
-            } else {
-                this.activePieces[i].active = 0;
-            }
+        let clear = 0;
+        this.activePiece.shape.forEach((row,y) => {
+            row.forEach((value,x) => {
+                if(value == 0){
+                    return;
+                }
+                if(board.grid[this.activePiece.y+this.activePiece.height][this.activePiece.x+x] > 1){
+                    clear++;
+                }
+            });
         });
+        if(clear == 0){
+            this.activePiece.y++;
+        } else {
+            this.activePiece.active = 0;
+        }
         this.lastFallTime = Date.now();
     }
 
@@ -284,24 +284,19 @@ class Board{
         
     }
 
-    gameOverCheck(force){
-        //console.log(this.grid[1]);
-        this.grid[1].forEach((value,x) =>{
-            if(value >= 2){
-                this.gameOver = true;
-                this.ctx.fillStyle = 'rgba(0,0,0,1)';
-                this.ctx.font = `10px Arial`;
-                this.ctx.fillText("Game Over",Canvas.ctx.canvas.width/2,Canvas.ctx.canvas.height/2);
-
-            }
-        });
-        if(force){
-            this.ctx.clearRect(0,0,Canvas.ctx.canvas.width,Canvas.ctx.canvas.height/2);
-            this.ctx.fillStyle = 'rgba(0,0,0,1)';
-            this.ctx.font = `10px Arial`;
-            this.ctx.fillText("Game Over",50,50);
-            this.gameOver = true;
-        }
+    addItem(object){
+        console.log(object);
+        [object].push({id:this.pieces.length}); // no need to add one as the length is 1 more than the index as arrays start at 0, a 1 item array would start at 0 but the length is 1
+        console.log(this.pieces);
+        this.pieces.push(object);
+        //console.log(object);
+        return object;
     }
-    
+    removeItem(id){
+        this.pieces.splice(id,1);
+    }
+
+    setInactive(){
+        board.activePiece.active = 0;
+    }
 }

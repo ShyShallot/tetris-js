@@ -25,7 +25,7 @@ function loop(){
     board.fallPieces();
     board.checkLineClear();
     board.resetLinesCleared();
-    board.gameOverCheck();
+    //board.gameOverCheck();
     if(board.gameOver){
         clearInterval(loopFunc);
         document.getElementById('canvas').style.display = 'none';

@@ -1,26 +1,19 @@
 async function hasTouchedBorder(piece){
     ////console.log(piece);
     if(piece.active == 1){
-        nextSpot = piece.realY()+1;
-        if(nextSpot >= 20){
-            await sleep(500);
-            piece.active = 0;
-            piece.shape.forEach((row,y) =>{
-                row.forEach((value,x) =>{
-                    if(value > 0){
-                        pieceY = piece.y;
-                        if(pieceY >= 20){
-                            pieceY = 19;
-                        }
-                        board.updateBoard(piece.x-2+x,pieceY+y,2);
-                    }
-                });
-            });
+        console.log(piece);
+        left = piece.x-1;
+        console.log(left);
+        right = piece.x+piece.length+1;
+        console.log(right);
+        if(left <= 0 || right >= 10){
+            console.log(true);
+            return true;
         }
     }
 }
 function collisionSystem(){
-    Canvas.activeItems.forEach((piece, i) => {
-        hasTouchedBorder(piece);
+    board.pieces.forEach((piece, i) => {
+        //hasTouchedBorder(piece);
     });
 }

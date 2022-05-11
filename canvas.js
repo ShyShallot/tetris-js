@@ -12,8 +12,12 @@ function newCanvas(){
         },
         draw: function(){
                 this.ctx.clearRect(0,0,this.ctx.canvas.width,this.ctx.canvas.height);
-                for(i=0;i<this.activeItems.length;i++){
-                    piece = this.activeItems[i];
+                console.log(board);
+                if(board.pieces.length <= 0){
+                    return;
+                }
+                for(i=0;i<board.pieces.length;i++){
+                    piece = board.pieces[i];
                     ////console.log(piece);
                     this.ctx.fillStyle = piece.color;
                     piece.shape.forEach((row, y) => {
@@ -22,11 +26,11 @@ function newCanvas(){
                             if(value > 0){
                                 ////console.log(x,y,row,value);
                                 this.ctx.fillStyle = piece.color;
-                                this.ctx.fillRect(piece.x-2+x,piece.y+y,1,1);
+                                this.ctx.fillRect(piece.x+x,piece.y+y,1,1);
                                 if(piece.active == 0){
-                                    board.updateBoard(piece.x-2+x,piece.y+y,2);
+                                    board.updateBoard(piece.x+x,piece.y+y,2);
                                 } else {
-                                    board.updateBoard(piece.x-2+x,piece.y+y,1);
+                                    board.updateBoard(piece.x+x,piece.y+y,1);
                                 }
                             }
                             
@@ -34,31 +38,7 @@ function newCanvas(){
                     });  
                 }
         },
-        getItems: function(){
-            return this.activeItems;
-        },
-        activeItems: [
-
-        ],
-        addItem: function(object){
-            //console.log(object);
-            [object].push({id:this.activeItems.length}); // no need to add one as the length is 1 more than the index as arrays start at 0, a 1 item array would start at 0 but the length is 1
-            this.activeItems.push(object);
-            //console.log(object);
-            return object;
-        },
-        removeItem: function(id){
-            this.activeItems.splice(id,1);
-        },
-        grabActivePiece: function(){
-            var activePiece = null;
-            this.activeItems.for((piece, i) => {
-                if(piece.active == 1){
-                    activePiece = piece;
-                }
-            });
-            return activePiece;
-        }
+        
     }
     return Canvas;
 }
