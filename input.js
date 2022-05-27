@@ -10,9 +10,6 @@ function InputHandler(e){
     console.log(e);
     board.isInputActive(true);
     //console.log(board.inputActive);
-    if(board.paused){
-        return;
-    }
     switch(e.keyCode){
         case inputs.DOWN:
             clear = 0;
@@ -81,7 +78,9 @@ function InputHandler(e){
                 newHeight = board.activePiece.length;
                 newLength = board.activePiece.height;
                 board.activePiece.length = newLength;
-                board.activePiece.height = newHeight;
+                board.activePiece.heigh
+                
+                t = newHeight;
                 console.log(piece.x)
             break;
         case inputs.PAUSE:
