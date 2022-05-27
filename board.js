@@ -16,6 +16,7 @@ class Board{
         this.activePiece;
         this.pieces = [];
         this.paused = false;
+        this.heldPiece;
     }
     reset(){
         this.grid = this.emptyBoard();
@@ -77,16 +78,16 @@ class Board{
         if(this.gameOver){
             return;
         }
-        if(this.shapeList.length == 2){
+        if(this.shapeList.length == 1){
             this.updateList = false;
         }
-        while(this.shapeList.length < 2 && this.updateList){
+        while(this.shapeList.length < 1 && this.updateList){
             this.possibleShapes = ["I","J","L","O","S","T","Z"];
-            var randomShape = this.possibleShapes[getRNG(0,this.possibleShapes.length-1)];
+            var randomShape = this.possibleShapes[getRNG(this.possibleShapes.length-1)];
             ////console.log(randomShape);
             this.shapeList.push(randomShape);
         }
-        if(this.shapeList.length == 2){
+        if(this.shapeList.length == 1){
             this.updateList = false;
         }
         
@@ -181,6 +182,7 @@ class Board{
                 break;
         }
         this.ctx.fillStyle = this.color;
+        let pieceData = {"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape, "id":this.pieces.length}
         if(!bool){
             this.shape.forEach((row, y) => {
                 //console.log(row);
@@ -192,21 +194,17 @@ class Board{
                     }
                 });
             });
-            var piece = this.addItem({"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape});
+            var piece = this.addItem(pieceData);
             console.log(piece);
             this.activePiece = piece;
             return piece;
         } else {
-            var piece = {"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape};
-            return piece;
+            return pieceData;
         }
     }
     
     fallPieces(){
         if(this.gameOver){
-            return;
-        }
-        if(this.paused){
             return;
         }
         if(this.lastFallTime + this.fallTime > Date.now()){
@@ -309,5 +307,21 @@ class Board{
 
     setInactive(){
         board.activePiece.active = 0;
+    }
+
+    holdPiece(){
+        if(typeof this.heldPiece === 'object'){
+            this.shapeList[0] = this.heldPiece.shapeN;
+            this.activePiece.active = 0;
+            this.heldPiece = this.activePiece;
+            this.removeItem(this.activePiece.id);
+            document.getElementById("heldPiece").innerText = `Held Piece: ${this.heldPiece.shapeN}`;
+        } else {
+            this.heldPiece = this.activePiece;
+            this.activePiece.active = 0;
+            this.removeItem(this.activePiece.id);
+            document.getElementById("heldPiece").innerText = `Held Piece: ${this.heldPiece.shapeN}`;
+        }
+        
     }
 }

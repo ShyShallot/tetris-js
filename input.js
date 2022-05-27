@@ -3,10 +3,11 @@ const inputs = {
     LEFT: 37,
     RIGHT: 39,
     UP: 38,
-    PAUSE:27
+    PAUSE:27,
+    HOLD: 72
 }
 function InputHandler(e){
-    //console.log(e);
+    console.log(e);
     board.isInputActive(true);
     //console.log(board.inputActive);
     if(board.paused){
@@ -91,6 +92,10 @@ function InputHandler(e){
                 board.paused = true;
                 document.getElementById("paused").style.display = "block";
             }
+            break;
+        case inputs.HOLD:
+            board.holdPiece();
+            break;
     }
     board.isInputActive(false);
     //console.log(board.inputActive);

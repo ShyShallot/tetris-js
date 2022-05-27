@@ -12,10 +12,13 @@ function main(){
     document.addEventListener('keydown', InputHandler);
     loopFunc = setInterval(() =>{
         loop();
-    },100);
+    },100 );
 }
 
 function loop(){
+    if(board.paused){
+        return;
+    }
     //console.log(`Game Status ${board.gameOver}`);
     board.reset();
     canvas.draw();
