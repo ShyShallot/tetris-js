@@ -15,6 +15,7 @@ class Board{
         this.nextPieceText = document.getElementById('nextPiece');
         this.activePiece;
         this.pieces = [];
+        this.paused = false;
     }
     reset(){
         this.grid = this.emptyBoard();
@@ -22,7 +23,7 @@ class Board{
 
     emptyBoard(){
         return Array.from(
-            {length: Canvas.rows}, () => Array(Canvas.cols).fill(0)
+            {length: this.canvas.rows}, () => Array(this.canvas.cols).fill(0)
         );
     }
 
@@ -107,7 +108,7 @@ class Board{
         this.nextPieceText.innerText = `Next Piece: ${this.shapeList[0]}`;
     }
 
-    createPiece(type){
+    createPiece(type,bool){
         this.x = 0;
         this.y = 0;
         switch(type){
@@ -180,24 +181,32 @@ class Board{
                 break;
         }
         this.ctx.fillStyle = this.color;
-        this.shape.forEach((row, y) => {
-            //console.log(row);
-            row.forEach((value,x) => {
-                if(value > 0){
-                    console.log(x,y,row,value);
-                    this.ctx.fillRect(this.x+x-this.length,this.y+y+this.height,1,1);
-                    board.updateBoard(this.x+x-this.length,this.y+y+this.height);   
-                }
+        if(!bool){
+            this.shape.forEach((row, y) => {
+                //console.log(row);
+                row.forEach((value,x) => {
+                    if(value > 0){
+                        console.log(x,y,row,value);
+                        this.ctx.fillRect(this.x+x-this.length,this.y+y+this.height,1,1);
+                        board.updateBoard(this.x+x-this.length,this.y+y+this.height);   
+                    }
+                });
             });
-        });
-        var piece = this.addItem({"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape});
-        console.log(piece);
-        this.activePiece = piece;
-        return piece;
+            var piece = this.addItem({"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape});
+            console.log(piece);
+            this.activePiece = piece;
+            return piece;
+        } else {
+            var piece = {"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape};
+            return piece;
+        }
     }
     
     fallPieces(){
         if(this.gameOver){
+            return;
+        }
+        if(this.paused){
             return;
         }
         if(this.lastFallTime + this.fallTime > Date.now()){
@@ -212,16 +221,18 @@ class Board{
             return;
         }
         let clear = 0;
+        console.log(this.activePiece.shape);
         this.activePiece.shape.forEach((row,y) => {
             row.forEach((value,x) => {
                 if(value == 0){
                     return;
                 }
-                if(board.grid[this.activePiece.y+this.activePiece.height][this.activePiece.x+x] > 1){
-                    clear++;
+                if(board.grid[this.activePiece.y+y+1][this.activePiece.x+x] == 2){
+                    clear--;
                 }
             });
         });
+        console.log(clear);
         if(clear == 0){
             this.activePiece.y++;
         } else {
@@ -262,7 +273,7 @@ class Board{
             if(row.every(value => value == 2)){
                 this.cleared = false;
                 console.log(`Row is ready to clear`);
-                Canvas.activeItems.forEach((piece,i) =>{
+                canvas.activeItems.forEach((piece,i) =>{
                     console.log(`Active Piece: ${piece}`)
                     piece.shape.forEach((pRow,pY) =>{
                         console.log(`Current Row: ${pRow}, Index: ${pY}`);

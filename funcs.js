@@ -15,8 +15,6 @@ function isValidMoveSpot(piece,board,dir){
     
 }
 function transpose(matrix) { // https://stackoverflow.com/questions/17428587/transposing-a-2d-array-in-javascript
-    console.log(matrix);
-    return matrix.map((row, i) =>
-        row.map((val, j) => matrix[matrix.length - 1 - j][i])
-    );
+    
+    return matrix[0].map((val, index) => matrix.map(row => row[index]).reverse());
   }
