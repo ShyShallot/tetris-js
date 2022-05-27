@@ -1,6 +1,9 @@
-Canvas = newCanvas();
-Canvas.init();
-let board = new Board(Canvas);
+let canvas = new Canvas("canvas");
+console.log(canvas);
+canvas.init();
+let pieceDisplay = new PieceDisplay("nextPieceDisplay");
+pieceDisplay.init();
+let board = new Board(canvas);
 let scoreMan = new Score();
 
 function main(){
@@ -9,13 +12,17 @@ function main(){
     document.addEventListener('keydown', InputHandler);
     loopFunc = setInterval(() =>{
         loop();
-    },100);
+    },100 );
 }
 
 function loop(){
+    if(board.paused){
+        return;
+    }
     //console.log(`Game Status ${board.gameOver}`);
     board.reset();
-    Canvas.draw();
+    canvas.draw();
+    pieceDisplay.draw();
     board.generatePieces();
     scoreMan.checkLevel();
     scoreMan.updateScore();
@@ -25,7 +32,7 @@ function loop(){
     board.fallPieces();
     board.checkLineClear();
     board.resetLinesCleared();
-    board.gameOverCheck();
+    //board.gameOverCheck();
     if(board.gameOver){
         clearInterval(loopFunc);
         document.getElementById('canvas').style.display = 'none';

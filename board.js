@@ -13,6 +13,10 @@ class Board{
         this.LineClearedTime = 2500;
         this.gameOver = false;
         this.nextPieceText = document.getElementById('nextPiece');
+        this.activePiece;
+        this.pieces = [];
+        this.paused = false;
+        this.heldPiece;
     }
     reset(){
         this.grid = this.emptyBoard();
@@ -20,7 +24,7 @@ class Board{
 
     emptyBoard(){
         return Array.from(
-            {length: Canvas.rows}, () => Array(Canvas.cols).fill(0)
+            {length: this.canvas.rows}, () => Array(this.canvas.cols).fill(0)
         );
     }
 
@@ -33,8 +37,8 @@ class Board{
                 this.ctx.fillStyle = 'rgba(0,0,0,1)';
                 this.ctx.fillRect(x,y,0.1,1);
                 this.ctx.fillRect(x,y,1,0.1);
-                //this.ctx.font = `1px Arial`;
-                //this.ctx.fillText(value.toString(),x,y+1);
+                this.ctx.font = `1px Arial`;
+                this.ctx.fillText(value.toString(),x,y+1);
             });
         });
         //this.ctx.fillStyle = 'rgba(255,255,255,1)';
@@ -74,28 +78,23 @@ class Board{
         if(this.gameOver){
             return;
         }
-        this.grid[1].forEach((value,x) => {
-            if(value >= 2){
-                this.gameOverCheck(true);
-            }
-        });
-        if(this.shapeList.length == 2){
+        if(this.shapeList.length == 1){
             this.updateList = false;
         }
-        while(this.shapeList.length < 2 && this.updateList){
+        while(this.shapeList.length < 1 && this.updateList){
             this.possibleShapes = ["I","J","L","O","S","T","Z"];
-            var randomShape = this.possibleShapes[getRNG(0,this.possibleShapes.length-1)];
+            var randomShape = this.possibleShapes[getRNG(this.possibleShapes.length-1)];
             ////console.log(randomShape);
             this.shapeList.push(randomShape);
         }
-        if(this.shapeList.length == 2){
+        if(this.shapeList.length == 1){
             this.updateList = false;
         }
         
         ////console.log(this.shapeList);
         this.fallingPieces = 0;
-        if(Canvas.activeItems.length >= 1){
-            Canvas.activeItems.forEach((piece,i) => {
+        if(this.pieces.length >= 1){
+            this.pieces.forEach((piece,i) => {
                 if(piece.active == 1 ){
                     this.fallingPieces++;
                 }
@@ -110,99 +109,98 @@ class Board{
         this.nextPieceText.innerText = `Next Piece: ${this.shapeList[0]}`;
     }
 
-    createPiece(type){
-        this.x = 5; // offset by 2, so this x-2 is the actual x;
+    createPiece(type,bool){
+        this.x = 0;
         this.y = 0;
         switch(type){
             case 'I':
                 this.color = '#75f1ff';
+                this.length = 1;
+                this.height = 4;
                 this.shape = [
-                    [0,1,0,0],
-                    [0,1,0,0],
-                    [0,1,0,0],
-                    [0,1,0,0]
+                    [1],
+                    [1],
+                    [1],
+                    [1]
                 ];
                 break;
             case 'J':
                 this.color = '#0d00ff';
+                this.length = 2;
+                this.height = 3;
                 this.shape = [
-                    [0,2,0],
-                    [0,2,0],
-                    [1,2,0]
+                    [0,1],
+                    [0,1],
+                    [1,1]
                 ];
                 break;
             case 'L':
                 this.color = '#ffb300';
+                this.length = 2;
+                this.height = 3;
                 this.shape = [
-                    [1,0,0],
-                    [1,0,0],
-                    [1,2,0]
+                    [1,0],
+                    [1,0],
+                    [1,1]
                 ];
                 break;
             case 'O':
                 this.color = '#fff700';
+                this.length = 2;
+                this.height = 2;
                 this.shape = [
-                    [1,2,0],
-                    [1,2,0]
+                    [1,1],
+                    [1,1]
                 ];
                 break;
             case 'S':
                 this.color = '#48913c';
+                this.length = 3;
+                this.height = 2;
                 this.shape = [
-                    [0,0,0],
-                    [0,2,3],
-                    [1,2,0]
+                    [0,1,1],
+                    [1,1,0]
                 ];
                 break;
             case 'T':
                 this.color = '#a732d1';
+                this.length = 3;
+                this.height = 2;
                 this.shape = [
-                    [0,0,0],
-                    [1,2,3],
+                    [1,1,1],
                     [0,1,0]
                 ];
                 break;
             case 'Z':
                 this.color = '#ff3d3d';
+                this.length = 3;
+                this.height = 2;
                 this.shape = [
-                    [0,0,0],
-                    [1,2,0],
-                    [0,2,3]
+                    [1,1,0],
+                    [0,1,1]
                 ];
                 break;
         }
         this.ctx.fillStyle = this.color;
-        this.shape.forEach((row, y) => {
-            //console.log(row);
-            row.forEach((value,x) => {
-                if(value > 0){
-                    //console.log(x,y,row,value);
-                    this.ctx.fillRect(this.x+x+2,this.y+y,1,1);
-                    board.updateBoard(this.x+x-2,this.y+y);   
-                }
-            });
-        });
-        var piece = this.canvas.addItem({"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"shape":this.shape,
-        height: function(){
-            return this.shape.length;
-        },
-        realY: function(){
-            return this.y+this.shape.length-1;
-        },
-        length: function(){
-            this.Length = 0;
-            this.shape.forEach((row,y) =>{
-                row.forEach((value,x)=>{
+        let pieceData = {"x":this.x,"y":this.y,"active":1,'color':this.color,"shapeN":type,"length":this.length,"height":this.height,"shape":this.shape, "id":this.pieces.length}
+        if(!bool){
+            this.shape.forEach((row, y) => {
+                //console.log(row);
+                row.forEach((value,x) => {
                     if(value > 0){
-                        this.Length++;
-                        return;
+                        console.log(x,y,row,value);
+                        this.ctx.fillRect(this.x+x-this.length,this.y+y+this.height,1,1);
+                        board.updateBoard(this.x+x-this.length,this.y+y+this.height);   
                     }
                 });
             });
-            return this.Length;
+            var piece = this.addItem(pieceData);
+            console.log(piece);
+            this.activePiece = piece;
+            return piece;
+        } else {
+            return pieceData;
         }
-        });
-        return piece;
     }
     
     fallPieces(){
@@ -210,23 +208,34 @@ class Board{
             return;
         }
         if(this.lastFallTime + this.fallTime > Date.now()){
+            console.log("dont fall");
             return;
         }
         if(this.inputActive){
+            this
+        }
+        if(this.activePiece.y+this.activePiece.height > 19){
+            this.activePiece.active = 0;
             return;
         }
-        this.activePieces = this.canvas.getItems();
-        //console.log(this.activePieces);
-        this.activePieces.forEach((piece, i) => {
-            if(isValidMoveSpot(piece, board)){
-                //console.log(piece, i);
-                this.oldY = this.activePieces[i].y;
-                this.activePieces[i].y +=1;
-                board.reset();
-            } else {
-                this.activePieces[i].active = 0;
-            }
+        let clear = 0;
+        console.log(this.activePiece.shape);
+        this.activePiece.shape.forEach((row,y) => {
+            row.forEach((value,x) => {
+                if(value == 0){
+                    return;
+                }
+                if(board.grid[this.activePiece.y+y+1][this.activePiece.x+x] == 2){
+                    clear--;
+                }
+            });
         });
+        console.log(clear);
+        if(clear == 0){
+            this.activePiece.y++;
+        } else {
+            this.activePiece.active = 0;
+        }
         this.lastFallTime = Date.now();
     }
 
@@ -262,7 +271,7 @@ class Board{
             if(row.every(value => value == 2)){
                 this.cleared = false;
                 console.log(`Row is ready to clear`);
-                Canvas.activeItems.forEach((piece,i) =>{
+                canvas.activeItems.forEach((piece,i) =>{
                     console.log(`Active Piece: ${piece}`)
                     piece.shape.forEach((pRow,pY) =>{
                         console.log(`Current Row: ${pRow}, Index: ${pY}`);
@@ -284,24 +293,35 @@ class Board{
         
     }
 
-    gameOverCheck(force){
-        //console.log(this.grid[1]);
-        this.grid[1].forEach((value,x) =>{
-            if(value >= 2){
-                this.gameOver = true;
-                this.ctx.fillStyle = 'rgba(0,0,0,1)';
-                this.ctx.font = `10px Arial`;
-                this.ctx.fillText("Game Over",Canvas.ctx.canvas.width/2,Canvas.ctx.canvas.height/2);
-
-            }
-        });
-        if(force){
-            this.ctx.clearRect(0,0,Canvas.ctx.canvas.width,Canvas.ctx.canvas.height/2);
-            this.ctx.fillStyle = 'rgba(0,0,0,1)';
-            this.ctx.font = `10px Arial`;
-            this.ctx.fillText("Game Over",50,50);
-            this.gameOver = true;
-        }
+    addItem(object){
+        console.log(object);
+        [object].push({id:this.pieces.length}); // no need to add one as the length is 1 more than the index as arrays start at 0, a 1 item array would start at 0 but the length is 1
+        console.log(this.pieces);
+        this.pieces.push(object);
+        //console.log(object);
+        return object;
     }
-    
+    removeItem(id){
+        this.pieces.splice(id,1);
+    }
+
+    setInactive(){
+        board.activePiece.active = 0;
+    }
+
+    holdPiece(){
+        if(typeof this.heldPiece === 'object'){
+            this.shapeList[0] = this.heldPiece.shapeN;
+            this.activePiece.active = 0;
+            this.heldPiece = this.activePiece;
+            this.removeItem(this.activePiece.id);
+            document.getElementById("heldPiece").innerText = `Held Piece: ${this.heldPiece.shapeN}`;
+        } else {
+            this.heldPiece = this.activePiece;
+            this.activePiece.active = 0;
+            this.removeItem(this.activePiece.id);
+            document.getElementById("heldPiece").innerText = `Held Piece: ${this.heldPiece.shapeN}`;
+        }
+        
+    }
 }
