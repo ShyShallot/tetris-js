@@ -17,6 +17,7 @@ class Board{
         this.pieces = [];
         this.paused = false;
         this.heldPiece;
+        this.canHold = true;
     }
     reset(){
         this.grid = this.emptyBoard();
@@ -310,7 +311,7 @@ class Board{
     }
 
     holdPiece(){
-        if(typeof this.heldPiece === 'object'){
+        if(typeof this.heldPiece === 'object' && this.canHold){
             this.shapeList[0] = this.heldPiece.shapeN;
             this.activePiece.active = 0;
             this.heldPiece = this.activePiece;
@@ -321,6 +322,7 @@ class Board{
             this.activePiece.active = 0;
             this.removeItem(this.activePiece.id);
             document.getElementById("heldPiece").innerText = `Held Piece: ${this.heldPiece.shapeN}`;
+            this.canHold = false;
         }
         
     }

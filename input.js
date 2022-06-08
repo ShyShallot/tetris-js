@@ -27,6 +27,9 @@ function InputHandler(e){
             });
             if(clear < 1){
                 aP.y++;
+            } else {
+                board.activePiece.active = 0;
+                return;
             }
             board.activePiece = aP;
             break;
