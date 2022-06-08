@@ -1,19 +1,38 @@
-async function hasTouchedBorder(piece){
-    ////console.log(piece);
-    if(piece.active == 1){
-        console.log(piece);
-        left = piece.x-1;
-        console.log(left);
-        right = piece.x+piece.length+1;
-        console.log(right);
-        if(left <= 0 || right >= 10){
-            console.log(true);
-            return true;
-        }
+function pieceCollide(piece, dir){
+    if(!dir){
+        return;
     }
-}
-function collisionSystem(){
-    board.pieces.forEach((piece, i) => {
-        //hasTouchedBorder(piece);
+    collide = false;
+    piece.shape.forEach((row,y) => {
+        row.forEach((value,x) => {
+            if(value == 0){
+                return;
+            }
+            switch (dir){
+                case 'down':
+                    y++;
+                    if(piece.y+piece.height >= 19){
+                        return;
+                    }
+                    break;
+                case 'left':
+                    if(piece.x <= 0){
+                        return;
+                    }
+                    x--;
+                    break;
+                case 'right':
+                    if(piece.x+piece.length >= 9){
+                        return;
+                    }
+                    x++;
+                    break;
+            }
+            boardValue = board.grid[piece.y+y][piece.x+x];
+            if(boardValue == 1){
+                collide = true;
+            }
+        });
     });
+    return collide;
 }

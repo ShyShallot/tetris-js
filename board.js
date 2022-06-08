@@ -1,10 +1,10 @@
 class Board{
     constructor(Canvas){
         this.canvas = Canvas;
-        this.ctx = Canvas.ctx;
-        this.lastFallTime = Date.now();
-        this.fallTime = 1000;
-        this.inputActive = false;
+        this.ctx = Canvas.ctx; 
+        this.lastFallTime = Date.now(); // keeps track of when a piece falls
+        this.fallTime = 1000; // time that the game waits to drop a piece
+        this.inputActive = false; // check if input was recently pressed
         this.shapeList = [];
         this.updateList = true;
         this.pieceAhead = 0;
